@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future of Events Summit 2027</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .tab-active {
+            border-bottom: 2px solid #2563eb;
+            color: #2563eb;
+            font-weight: 600;
+        }
+        .grid-timeline {
+            display: grid;
+            grid-template-columns: 80px repeat(5, minmax(200px, 1fr));
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-indigo-900 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Future of Events Summit 2027</h1>
+                <p class="text-indigo-200 text-sm mt-1">
+                    <i class="fa-regular fa-calendar mr-1"></i> May 12–14, 2027 &nbsp;|&nbsp; 
+                    <i class="fa-solid fa-location-dot mr-1"></i> Toronto, Ontario, Canada &nbsp;|&nbsp;
+                    <i class="fa-regular fa-clock mr-1"></i> America/Toronto (EDT)
+                </p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button id="export-agenda-btn" class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold px-4 py-2 rounded-lg text-sm transition flex items-center gap-2 shadow">
+                    <i class="fa-solid fa-calendar-plus"></i> Export My Agenda (.ics)
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+
+        <!-- Controls & Filters Section -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 mb-6">
+            <!-- Navigation Tabs & Search -->
+            <div class="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4 pb-4 border-b border-slate-200">
+                <!-- Navigation Tabs -->
+                <div class="flex border-b lg:border-b-0 border-slate-200 gap-6 text-sm font-medium">
+                    <button id="view-list-btn" onclick="switchView('list')" class="pb-3 tab-active transition flex items-center gap-2">
+                        <i class="fa-solid fa-list-ul"></i> Day-by-Day List
+                    </button>
+                    <button id="view-grid-btn" onclick="switchView('grid')" class="pb-3 text-slate-500 hover:text-slate-800 transition flex items-center gap-2">
+                        <i class="fa-solid fa-table-cells"></i> Day Grid Timeline
+                    </button>
+                    <button id="view-agenda-btn" onclick="switchView('agenda')" class="pb-3 text-slate-500 hover:text-slate-800 transition flex items-center gap-2 relative">
+                        <i class="fa-solid fa-star text-amber-500"></i> My Agenda
+                        <span id="agenda-badge" class="bg-indigo-600 text-white text-xs px-2 py-0.5 rounded-full ml-1">0</span>
+                    </button>
+                </div>
+
+                <!-- Live Search Bar -->
+                <div class="relative min-w-[280px] sm:min-w-[320px]">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="search-input" placeholder="Search sessions, speakers, topics..."
+                        class="w-full pl-9 pr-8 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+                        oninput="onFilterChange()">
+                    <button id="clear-search-btn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Date Selector Tabs (for Day filtering) -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mt-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 mr-1">Day:</span>
+                    <button onclick="setDayFilter('all')" id="day-filter-all" class="px-3 py-1.5 text-xs font-semibold rounded-md bg-indigo-600 text-white transition">All Days</button>
+                    <button onclick="setDayFilter('2027-05-12')" id="day-filter-2027-05-12" class="px-3 py-1.5 text-xs font-semibold rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 transition">May 12</button>
+                    <button onclick="setDayFilter('2027-05-13')" id="day-filter-2027-05-13" class="px-3 py-1.5 text-xs font-semibold rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 transition">May 13</button>
+                    <button onclick="setDayFilter('2027-05-14')" id="day-filter-2027-05-14" class="px-3 py-1.5 text-xs font-semibold rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 transition">May 14</button>
+                </div>
+
+                <button onclick="resetAllFilters()" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition flex items-center gap-1">
+                    <i class="fa-solid fa-rotate-left"></i> Reset All Filters
+                </button>
+            </div>
+
+            <!-- Multi-Faceted Filters -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Track</label>
+                    <select id="filter-track" onchange="onFilterChange()" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+                        <option value="">All Tracks</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Room</label>
+                    <select id="filter-room" onchange="onFilterChange()" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+                        <option value="">All Rooms</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Session Type</label>
+                    <select id="filter-type" onchange="onFilterChange()" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+                        <option value="">All Types</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Audience Level</label>
+                    <select id="filter-level" onchange="onFilterChange()" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+                        <option value="">All Levels</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Overlap Alert Warning Banner -->
+        <div id="overlap-warning" class="hidden bg-amber-50 border-l-4 border-amber-500 p-4 mb-6 rounded-r-lg shadow-sm">
+            <div class="flex items-start">
+                <div class="flex-shrink-0 text-amber-500 mt-0.5">
+                    <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-semibold text-amber-800">Schedule Overlap Detected in My Agenda</h3>
+                    <div id="overlap-details" class="mt-1 text-xs text-amber-700 space-y-1"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Container (Loading / Error / Empty) -->
+        <div id="status-container" class="my-8 text-center py-12 bg-white rounded-xl border border-slate-200">
+            <div id="status-loading" class="flex flex-col items-center justify-center">
+                <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600 mb-3"></div>
+                <p class="text-sm font-medium text-slate-600">Loading summit agenda...</p>
+            </div>
+            <div id="status-error" class="hidden flex flex-col items-center justify-center text-rose-600 px-4">
+                <i class="fa-solid fa-circle-exclamation text-3xl mb-2"></i>
+                <p id="error-message" class="text-sm font-semibold mb-3">Failed to load data from live source.</p>
+                <button onclick="loadData()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-xs font-semibold hover:bg-indigo-700 transition">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Retry Connection
+                </button>
+            </div>
+            <div id="status-empty" class="hidden flex flex-col items-center justify-center text-slate-500 px-4">
+                <i class="fa-solid fa-filter-circle-xmark text-4xl mb-3 text-slate-300"></i>
+                <p class="text-base font-semibold text-slate-700">No sessions match your criteria</p>
+                <p class="text-xs text-slate-500 mt-1 mb-4">Try adjusting your keywords, date selection, or filters.</p>
+                <button onclick="resetAllFilters()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition">
+                    Clear Filters
+                </button>
+            </div>
+        </div>
+
+        <!-- View Content Containers -->
+        <div id="content-container" class="hidden">
+            <!-- View 1: Day-by-Day List View -->
+            <div id="list-view" class="space-y-8"></div>
+
+            <!-- View 2: Grid Timeline View -->
+            <div id="grid-view" class="hidden overflow-x-auto bg-white rounded-xl border border-slate-200 p-4 shadow-sm"></div>
+
+            <!-- View 3: My Agenda View -->
+            <div id="agenda-view" class="hidden space-y-6"></div>
+        </div>
+
+    </main>
+
+    <!-- Modal for Detailed Session Information -->
+    <div id="session-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-start bg-slate-50">
+                <div id="modal-header-content" class="pr-6">
+                    <!-- Title & Badges filled dynamically -->
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 transition p-1 rounded-lg hover:bg-slate-200">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div id="modal-body-content" class="p-6 overflow-y-auto space-y-6 flex-grow text-sm">
+                <!-- Session details and nested sub-presentations filled dynamically -->
+            </div>
+            <div class="p-4 border-t border-slate-100 bg-slate-50 flex justify-between items-center">
+                <button id="modal-bookmark-btn" class="px-4 py-2 text-xs font-semibold rounded-lg transition flex items-center gap-2">
+                    <!-- Bookmark button -->
+                </button>
+                <button id="modal-ics-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-calendar-plus"></i> Export .ics
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-xs mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p>&copy; 2027 Future of Events Summit. Toronto, Ontario, Canada.</p>
+            <p class="mt-1 text-slate-500">Live data processed securely in-browser. Timezone: America/Toronto.</p>
+        </div>
+    </footer>
+
+    <!-- Embedded Raw CSV Backup / Primary Data -->
+    <script id="embedded-csv" type="text/csv">﻿Session ID,Date,Session Start Time,Session End Time,Session Title,Session Type,Track,Room,Session Description,Presentation ID,Presentation Start Time,Presentation End Time,Presentation Title,Presenter Name,Presenter Affiliation,Audience Level,Timezone,Presenter Role,Participation ID
+FES001,2027-05-12,09:00,10:00,AI Is Your New Colleague. Now What?,Presentation,AI & Automation,Innovation Hall,"Compare drafting, scheduling and analysis tasks to decide where AI assistance needs human review. The session closes with implementation steps and time for questions.",P001,09:00,09:20,Where to Start and What to Avoid,Alex Morgan,BrightPath Events,All Levels,America/Toronto,Speaker,P001-01
+FES001,2027-05-12,09:00,10:00,AI Is Your New Colleague. Now What?,Presentation,AI & Automation,Innovation Hall,"Compare drafting, scheduling and analysis tasks to decide where AI assistance needs human review. The session closes with implementation steps and time for questions.",P002,09:20,09:40,A Real-World Workflow in Action,Morgan Chen,SummitWorks,All Levels,America/Toronto,Speaker,P002-01
+FES001,2027-05-12,09:00,10:00,AI Is Your New Colleague. Now What?,Presentation,AI & Automation,Innovation Hall,"Compare drafting, scheduling and analysis tasks to decide where AI assistance needs human review. The session closes with implementation steps and time for questions.",P003,09:40,10:00,Lessons Learned and Next Steps,Elena Park,OpenStage Labs,All Levels,America/Toronto,Speaker,P003-01
+FES002,2027-05-12,09:00,10:00,Networking for Introverts (and Everyone Else),Panel,Audience Experience,Studio A,"Design opt-in introductions, small-group prompts and ways to join without public speaking. The moderated conversation includes contrasting approaches, practical trade-offs and audience questions.",P004,09:00,10:00,Networking for Introverts (and Everyone Else),Priya Shah,Northstar Experiences,Beginner,America/Toronto,Panelist,P004-01
+FES002,2027-05-12,09:00,10:00,Networking for Introverts (and Everyone Else),Panel,Audience Experience,Studio A,"Design opt-in introductions, small-group prompts and ways to join without public speaking. The moderated conversation includes contrasting approaches, practical trade-offs and audience questions.",P004,09:00,10:00,Networking for Introverts (and Everyone Else),Jordan Lee,SummitWorks,Beginner,America/Toronto,Panelist,P004-02
+FES002,2027-05-12,09:00,10:00,Networking for Introverts (and Everyone Else),Panel,Audience Experience,Studio A,"Design opt-in introductions, small-group prompts and ways to join without public speaking. The moderated conversation includes contrasting approaches, practical trade-offs and audience questions.",P004,09:00,10:00,Networking for Introverts (and Everyone Else),Sam Rivera,OpenStage Labs,Beginner,America/Toronto,Panelist,P004-03
+FES002,2027-05-12,09:00,10:00,Networking for Introverts (and Everyone Else),Panel,Audience Experience,Studio A,"Design opt-in introductions, small-group prompts and ways to join without public speaking. The moderated conversation includes contrasting approaches, practical trade-offs and audience questions.",P004,09:00,10:00,Networking for Introverts (and Everyone Else),Taylor Brooks,Signal Event Tech,Beginner,America/Toronto,Moderator,P004-04
+FES003,2027-05-12,09:00,10:00,The Wi-Fi Is Down: A Survival Guide,Workshop,Event Technology,Studio B,"Rehearse an internet outage using offline check-in lists, local slide copies and a clear escalation tree. Participants leave with a draft checklist or workflow they can adapt to their next event.",P005,09:00,10:00,The Wi-Fi Is Down: A Survival Guide,Amira Patel,Northstar Experiences,Intermediate,America/Toronto,Facilitator,P005-01
+FES004,2027-05-12,09:00,10:00,Sustainable Events Without Greenwashing,Case Study,Sustainability & Innovation,The Forum,"Compare venue, catering and travel choices using evidence that can support public sustainability claims. The walkthrough examines the decisions, implementation challenges and lessons for a different event context.",P006,09:00,09:30,Setting Realistic Goals,Casey Laurent,GatherBetter,All Levels,America/Toronto,Speaker,P006-01
+FES004,2027-05-12,09:00,10:00,Sustainable Events Without Greenwashing,Case Study,Sustainability & Innovation,The Forum,"Compare venue, catering and travel choices using evidence that can support public sustainability claims. The walkthrough examines the decisions, implementation challenges and lessons for a different event context.",P007,09:30,10:00,Small Changes with Measurable Impact,Riley Bennett,OpenStage Labs,All Levels,America/Toronto,Speaker,P007-01
+FES005,2027-05-12,09:00,10:00,Behind the Scenes: When Plans Change,Interactive Discussion,Event Strategy & Operations,Workshop Lab,"Work through a delayed supplier arrival and decide who can approve changes to scope, timing and spend. Participants compare options in small groups and share the decisions they would make.",P008,09:00,10:00,Behind the Scenes: When Plans Change,Noor Haddad,GatherBetter,Beginner,America/Toronto,Facilitator,P008-01
+FES006,2027-05-12,10:30,11:30,Automate the Boring Stuff,Panel,AI & Automation,Innovation Hall,"Compare registration reminders, invoice routing and speaker follow-ups for automation potential. The moderated conversation includes contrasting approaches, practical trade-offs and audience questions.",P009,10:30,11:30,Automate the Boring Stuff,Amira Patel,Northstar Experiences,Beginner,America/Toronto,Panelist,P009-01
+FES006,2027-05-12,10:30,11:30,Automate the Boring Stuff,Panel,AI & Automation,Innovation Hall,"Compare registration reminders, invoice routing and speaker follow-ups for automation potential. The moderated conversation includes contrasting approaches, practical trade-offs and audience questions.",P009,10:30,11:30,Automate the Boring Stuff,Quinn Foster,BrightPath Events,Beginner,America/Toronto,Panelist,P009-02
+FES006,2027-05-12,10:30,11:30,Automate the Boring Stuff,Panel,AI & Automation,Innovation Hall,"Compare registration reminders, invoice routing and speaker follow-ups for automation potential. The moderated conversation includes contrasting approaches, practical trade-offs and audience questions.",P009,10:30,11:30,Automate the Boring Stuff,Jamie Clarke,SummitWorks,Beginner,America/Toronto,Panelist,P009-03
+FES006,2027-05-12,10:30,11:30,Automate the Boring Stuff,Panel,AI & Automation,Innovation Hall,"Compare registration reminders, invoice routing and speaker follow-ups for automation potential. The moderated conversation includes contrasting approaches, practical trade-offs and audience questions.",P009,10:30,11:30,Automate the Boring Stuff,Avery Singh,OpenStage Labs,Beginner,America/Toronto,Moderator,P009-04
+FES007,2027-05-12,10:30,11:30,Beyond Death by PowerPoint,Workshop,Audience Experience,Studio A,"Rework a slide-heavy segment with a clear narrative, readable visuals and audience participation. Participants leave with a draft checklist or workflow they can adapt to their next event.",P010,10:30,11:00,What Attendees Really Need,Morgan Chen,SummitWorks,Intermediate,America/Toronto,Facilitator,P010-01
+FES007,2027-05-12,10:30,11:30,Beyond Death by PowerPoint,Workshop,Audience Experience,Studio A,"Rework a slide-heavy segment with a clear narrative, readable visuals and audience participation. Participants leave with a draft checklist or workflow they can adapt to their next event.",P011,11:00,11:30,Design Choices That Make a Difference,Casey Laurent,GatherBetter,Intermediate,America/Toronto,Facilitator,P011-01
+FES008,2027-05-12,10:30,11:30,"Too Many Platforms, Not Enough Time",Case Study,Event Technology,Studio B,"Trace duplicate attendee records across registration, email and the event app to identify tools to consolidate. The walkthrough examines the decisions, implementation challenges and lessons for a different event context.",P012,10:30,11:30,"Too Many Platforms, Not Enough Time",Riley Bennett,OpenStage Labs,All Levels,America/Toronto,Speaker,P012-01
+FES009,2027-05-12,10:30,11:30,"Less Waste, More Impact",Interactive Discussion,Sustainability & Innovation,The Forum,"Compare refill stations, reusable serviceware and donation plans against venue constraints. Participants compare options in small groups and share the decisions they would make.",P013,10:30,11:30,"Less Waste, More Impact",Emerson Reed,Signal Event Tech,Beginner,America/Toronto,Facilitator,P013-01
+FES010,2027-05-12,10:30,11:30,The Last-Minute Speaker Cancellation Playbook,Presentation,Event Strategy & Operations,Workshop Lab,"Build a replacement-speaker decision tree covering substitute content, audience notices and stage cues. The session closes with implementation steps and time for questions.",P014,10:30,11:00,Planning for the Real World,Noor Haddad,GatherBetter,Intermediate,America/Toronto,Speaker,P014-01
+FES010,2027-05-12,10:30,11:30,The Last-Minute Speaker Cancellation Playbook,Presentation,Event Strategy & Operations,Workshop Lab,"Build a replacement-speaker decision tree covering substitute content, audience notices and stage cues. The session closes with implementation steps and time for questions.",P015,11:00,11:30,Decisions Under Pressure,Maya Dawson,GatherBetter,Intermediate,America/Toronto,Speaker,P015-01
+FES011,2027-05-12,12:45,13:45,When AI Gets It Wrong,Workshop,AI & Automation,Innovation Hall,"Review inaccurate summaries and invented answers, then design a review checklist for attendee-facing AI content. Participants leave with a draft checklist or workflow they can adapt to their next event.",P016,12:45,13:45,When AI Gets It Wrong,Jamie Clarke,SummitWorks,Intermediate,America/Toronto,Facilitator,P016-01
+FES012,2027-05-12,12:45,13:45,"The Attendee Journey, Reimagined",Case Study,Audience Experience,Studio A,"Map the journey from invitation to departure and identify friction at arrival, breaks and follow-up. The walkthrough examines the decisions, implementation challenges and lessons for a different event context.",P017,12:45,13:45,"The Attendee Journey, Reimagined",Avery Singh,OpenStage Labs,All Levels,America/Toronto,Speaker,P017-01
+FES013,2027-05-12,12:45,13:45,Choosing Tech That Teams Will Use,Interactive Discussion,Event Technology,Studio B,"Compare adoption barriers, training needs and support ownership before approving a new platform. Participants compare options in small groups and share the decisions they would make.",P018,12:45,13:15,The Challenge Behind the Scenes,Emerson Reed,Signal Event Tech,Beginner,America/Toronto,Facilitator,P018-01
+FES013,2027-05-12,12:45,13:45,Choosing Tech That Teams Will Use,Interactive Discussion,Event Technology,Studio B,"Compare adoption barriers, training needs and support ownership before approving a new platform. Participants compare options in small groups and share the decisions they would make.",P019,13:15,13:45,A Practical Solution in Action,Jordan Lee,SummitWorks,Beginner,America/Toronto,Facilitator,P019-01
+FES014,2027-05-12,12:45,13:45,The Future of Event Venues,Presentation,Sustainability & Innovation,The Forum,"Evaluate flexible spaces, power capacity, accessibility and connectivity in
