@@ -13,10 +13,6 @@
             color: #2563eb;
             font-weight: 600;
         }
-        .grid-timeline {
-            display: grid;
-            grid-template-columns: 80px repeat(5, minmax(200px, 1fr));
-        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
@@ -73,7 +69,7 @@
                 </div>
             </div>
 
-            <!-- Date Selector Tabs (for Day filtering) -->
+            <!-- Date Selector Tabs -->
             <div class="flex flex-wrap items-center justify-between gap-4 mt-4">
                 <div class="flex items-center gap-2">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 mr-1">Day:</span>
@@ -130,15 +126,15 @@
             </div>
         </div>
 
-        <!-- Status Container (Loading / Error / Empty) -->
+        <!-- Status Container -->
         <div id="status-container" class="my-8 text-center py-12 bg-white rounded-xl border border-slate-200">
             <div id="status-loading" class="flex flex-col items-center justify-center">
                 <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600 mb-3"></div>
-                <p class="text-sm font-medium text-slate-600">Loading summit agenda...</p>
+                <p class="text-sm font-medium text-slate-600">Fetching live summit data from Google Sheets...</p>
             </div>
             <div id="status-error" class="hidden flex flex-col items-center justify-center text-rose-600 px-4">
                 <i class="fa-solid fa-circle-exclamation text-3xl mb-2"></i>
-                <p id="error-message" class="text-sm font-semibold mb-3">Failed to load data from live source.</p>
+                <p id="error-message" class="text-sm font-semibold mb-3">Failed to load live data.</p>
                 <button onclick="loadData()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-xs font-semibold hover:bg-indigo-700 transition">
                     <i class="fa-solid fa-rotate-right mr-1"></i> Retry Connection
                 </button>
@@ -171,20 +167,14 @@
     <div id="session-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div class="p-6 border-b border-slate-100 flex justify-between items-start bg-slate-50">
-                <div id="modal-header-content" class="pr-6">
-                    <!-- Title & Badges filled dynamically -->
-                </div>
+                <div id="modal-header-content" class="pr-6"></div>
                 <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 transition p-1 rounded-lg hover:bg-slate-200">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
-            <div id="modal-body-content" class="p-6 overflow-y-auto space-y-6 flex-grow text-sm">
-                <!-- Session details and nested sub-presentations filled dynamically -->
-            </div>
+            <div id="modal-body-content" class="p-6 overflow-y-auto space-y-6 flex-grow text-sm"></div>
             <div class="p-4 border-t border-slate-100 bg-slate-50 flex justify-between items-center">
-                <button id="modal-bookmark-btn" class="px-4 py-2 text-xs font-semibold rounded-lg transition flex items-center gap-2">
-                    <!-- Bookmark button -->
-                </button>
+                <button id="modal-bookmark-btn" class="px-4 py-2 text-xs font-semibold rounded-lg transition flex items-center gap-2"></button>
                 <button id="modal-ics-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition flex items-center gap-2 shadow-sm">
                     <i class="fa-solid fa-calendar-plus"></i> Export .ics
                 </button>
@@ -196,35 +186,721 @@
     <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-xs mt-auto">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <p>&copy; 2027 Future of Events Summit. Toronto, Ontario, Canada.</p>
-            <p class="mt-1 text-slate-500">Live data processed securely in-browser. Timezone: America/Toronto.</p>
+            <p class="mt-1 text-slate-500">Live data processed directly from Google Sheets. Timezone: America/Toronto.</p>
         </div>
     </footer>
 
-    <!-- Embedded Raw CSV Backup / Primary Data -->
-    <script id="embedded-csv" type="text/csv">﻿Session ID,Date,Session Start Time,Session End Time,Session Title,Session Type,Track,Room,Session Description,Presentation ID,Presentation Start Time,Presentation End Time,Presentation Title,Presenter Name,Presenter Affiliation,Audience Level,Timezone,Presenter Role,Participation ID
-FES001,2027-05-12,09:00,10:00,AI Is Your New Colleague. Now What?,Presentation,AI & Automation,Innovation Hall,"Compare drafting, scheduling and analysis tasks to decide where AI assistance needs human review. The session closes with implementation steps and time for questions.",P001,09:00,09:20,Where to Start and What to Avoid,Alex Morgan,BrightPath Events,All Levels,America/Toronto,Speaker,P001-01
-FES001,2027-05-12,09:00,10:00,AI Is Your New Colleague. Now What?,Presentation,AI & Automation,Innovation Hall,"Compare drafting, scheduling and analysis tasks to decide where AI assistance needs human review. The session closes with implementation steps and time for questions.",P002,09:20,09:40,A Real-World Workflow in Action,Morgan Chen,SummitWorks,All Levels,America/Toronto,Speaker,P002-01
-FES001,2027-05-12,09:00,10:00,AI Is Your New Colleague. Now What?,Presentation,AI & Automation,Innovation Hall,"Compare drafting, scheduling and analysis tasks to decide where AI assistance needs human review. The session closes with implementation steps and time for questions.",P003,09:40,10:00,Lessons Learned and Next Steps,Elena Park,OpenStage Labs,All Levels,America/Toronto,Speaker,P003-01
-FES002,2027-05-12,09:00,10:00,Networking for Introverts (and Everyone Else),Panel,Audience Experience,Studio A,"Design opt-in introductions, small-group prompts and ways to join without public speaking. The moderated conversation includes contrasting approaches, practical trade-offs and audience questions.",P004,09:00,10:00,Networking for Introverts (and Everyone Else),Priya Shah,Northstar Experiences,Beginner,America/Toronto,Panelist,P004-01
-FES002,2027-05-12,09:00,10:00,Networking for Introverts (and Everyone Else),Panel,Audience Experience,Studio A,"Design opt-in introductions, small-group prompts and ways to join without public speaking. The moderated conversation includes contrasting approaches, practical trade-offs and audience questions.",P004,09:00,10:00,Networking for Introverts (and Everyone Else),Jordan Lee,SummitWorks,Beginner,America/Toronto,Panelist,P004-02
-FES002,2027-05-12,09:00,10:00,Networking for Introverts (and Everyone Else),Panel,Audience Experience,Studio A,"Design opt-in introductions, small-group prompts and ways to join without public speaking. The moderated conversation includes contrasting approaches, practical trade-offs and audience questions.",P004,09:00,10:00,Networking for Introverts (and Everyone Else),Sam Rivera,OpenStage Labs,Beginner,America/Toronto,Panelist,P004-03
-FES002,2027-05-12,09:00,10:00,Networking for Introverts (and Everyone Else),Panel,Audience Experience,Studio A,"Design opt-in introductions, small-group prompts and ways to join without public speaking. The moderated conversation includes contrasting approaches, practical trade-offs and audience questions.",P004,09:00,10:00,Networking for Introverts (and Everyone Else),Taylor Brooks,Signal Event Tech,Beginner,America/Toronto,Moderator,P004-04
-FES003,2027-05-12,09:00,10:00,The Wi-Fi Is Down: A Survival Guide,Workshop,Event Technology,Studio B,"Rehearse an internet outage using offline check-in lists, local slide copies and a clear escalation tree. Participants leave with a draft checklist or workflow they can adapt to their next event.",P005,09:00,10:00,The Wi-Fi Is Down: A Survival Guide,Amira Patel,Northstar Experiences,Intermediate,America/Toronto,Facilitator,P005-01
-FES004,2027-05-12,09:00,10:00,Sustainable Events Without Greenwashing,Case Study,Sustainability & Innovation,The Forum,"Compare venue, catering and travel choices using evidence that can support public sustainability claims. The walkthrough examines the decisions, implementation challenges and lessons for a different event context.",P006,09:00,09:30,Setting Realistic Goals,Casey Laurent,GatherBetter,All Levels,America/Toronto,Speaker,P006-01
-FES004,2027-05-12,09:00,10:00,Sustainable Events Without Greenwashing,Case Study,Sustainability & Innovation,The Forum,"Compare venue, catering and travel choices using evidence that can support public sustainability claims. The walkthrough examines the decisions, implementation challenges and lessons for a different event context.",P007,09:30,10:00,Small Changes with Measurable Impact,Riley Bennett,OpenStage Labs,All Levels,America/Toronto,Speaker,P007-01
-FES005,2027-05-12,09:00,10:00,Behind the Scenes: When Plans Change,Interactive Discussion,Event Strategy & Operations,Workshop Lab,"Work through a delayed supplier arrival and decide who can approve changes to scope, timing and spend. Participants compare options in small groups and share the decisions they would make.",P008,09:00,10:00,Behind the Scenes: When Plans Change,Noor Haddad,GatherBetter,Beginner,America/Toronto,Facilitator,P008-01
-FES006,2027-05-12,10:30,11:30,Automate the Boring Stuff,Panel,AI & Automation,Innovation Hall,"Compare registration reminders, invoice routing and speaker follow-ups for automation potential. The moderated conversation includes contrasting approaches, practical trade-offs and audience questions.",P009,10:30,11:30,Automate the Boring Stuff,Amira Patel,Northstar Experiences,Beginner,America/Toronto,Panelist,P009-01
-FES006,2027-05-12,10:30,11:30,Automate the Boring Stuff,Panel,AI & Automation,Innovation Hall,"Compare registration reminders, invoice routing and speaker follow-ups for automation potential. The moderated conversation includes contrasting approaches, practical trade-offs and audience questions.",P009,10:30,11:30,Automate the Boring Stuff,Quinn Foster,BrightPath Events,Beginner,America/Toronto,Panelist,P009-02
-FES006,2027-05-12,10:30,11:30,Automate the Boring Stuff,Panel,AI & Automation,Innovation Hall,"Compare registration reminders, invoice routing and speaker follow-ups for automation potential. The moderated conversation includes contrasting approaches, practical trade-offs and audience questions.",P009,10:30,11:30,Automate the Boring Stuff,Jamie Clarke,SummitWorks,Beginner,America/Toronto,Panelist,P009-03
-FES006,2027-05-12,10:30,11:30,Automate the Boring Stuff,Panel,AI & Automation,Innovation Hall,"Compare registration reminders, invoice routing and speaker follow-ups for automation potential. The moderated conversation includes contrasting approaches, practical trade-offs and audience questions.",P009,10:30,11:30,Automate the Boring Stuff,Avery Singh,OpenStage Labs,Beginner,America/Toronto,Moderator,P009-04
-FES007,2027-05-12,10:30,11:30,Beyond Death by PowerPoint,Workshop,Audience Experience,Studio A,"Rework a slide-heavy segment with a clear narrative, readable visuals and audience participation. Participants leave with a draft checklist or workflow they can adapt to their next event.",P010,10:30,11:00,What Attendees Really Need,Morgan Chen,SummitWorks,Intermediate,America/Toronto,Facilitator,P010-01
-FES007,2027-05-12,10:30,11:30,Beyond Death by PowerPoint,Workshop,Audience Experience,Studio A,"Rework a slide-heavy segment with a clear narrative, readable visuals and audience participation. Participants leave with a draft checklist or workflow they can adapt to their next event.",P011,11:00,11:30,Design Choices That Make a Difference,Casey Laurent,GatherBetter,Intermediate,America/Toronto,Facilitator,P011-01
-FES008,2027-05-12,10:30,11:30,"Too Many Platforms, Not Enough Time",Case Study,Event Technology,Studio B,"Trace duplicate attendee records across registration, email and the event app to identify tools to consolidate. The walkthrough examines the decisions, implementation challenges and lessons for a different event context.",P012,10:30,11:30,"Too Many Platforms, Not Enough Time",Riley Bennett,OpenStage Labs,All Levels,America/Toronto,Speaker,P012-01
-FES009,2027-05-12,10:30,11:30,"Less Waste, More Impact",Interactive Discussion,Sustainability & Innovation,The Forum,"Compare refill stations, reusable serviceware and donation plans against venue constraints. Participants compare options in small groups and share the decisions they would make.",P013,10:30,11:30,"Less Waste, More Impact",Emerson Reed,Signal Event Tech,Beginner,America/Toronto,Facilitator,P013-01
-FES010,2027-05-12,10:30,11:30,The Last-Minute Speaker Cancellation Playbook,Presentation,Event Strategy & Operations,Workshop Lab,"Build a replacement-speaker decision tree covering substitute content, audience notices and stage cues. The session closes with implementation steps and time for questions.",P014,10:30,11:00,Planning for the Real World,Noor Haddad,GatherBetter,Intermediate,America/Toronto,Speaker,P014-01
-FES010,2027-05-12,10:30,11:30,The Last-Minute Speaker Cancellation Playbook,Presentation,Event Strategy & Operations,Workshop Lab,"Build a replacement-speaker decision tree covering substitute content, audience notices and stage cues. The session closes with implementation steps and time for questions.",P015,11:00,11:30,Decisions Under Pressure,Maya Dawson,GatherBetter,Intermediate,America/Toronto,Speaker,P015-01
-FES011,2027-05-12,12:45,13:45,When AI Gets It Wrong,Workshop,AI & Automation,Innovation Hall,"Review inaccurate summaries and invented answers, then design a review checklist for attendee-facing AI content. Participants leave with a draft checklist or workflow they can adapt to their next event.",P016,12:45,13:45,When AI Gets It Wrong,Jamie Clarke,SummitWorks,Intermediate,America/Toronto,Facilitator,P016-01
-FES012,2027-05-12,12:45,13:45,"The Attendee Journey, Reimagined",Case Study,Audience Experience,Studio A,"Map the journey from invitation to departure and identify friction at arrival, breaks and follow-up. The walkthrough examines the decisions, implementation challenges and lessons for a different event context.",P017,12:45,13:45,"The Attendee Journey, Reimagined",Avery Singh,OpenStage Labs,All Levels,America/Toronto,Speaker,P017-01
-FES013,2027-05-12,12:45,13:45,Choosing Tech That Teams Will Use,Interactive Discussion,Event Technology,Studio B,"Compare adoption barriers, training needs and support ownership before approving a new platform. Participants compare options in small groups and share the decisions they would make.",P018,12:45,13:15,The Challenge Behind the Scenes,Emerson Reed,Signal Event Tech,Beginner,America/Toronto,Facilitator,P018-01
-FES013,2027-05-12,12:45,13:45,Choosing Tech That Teams Will Use,Interactive Discussion,Event Technology,Studio B,"Compare adoption barriers, training needs and support ownership before approving a new platform. Participants compare options in small groups and share the decisions they would make.",P019,13:15,13:45,A Practical Solution in Action,Jordan Lee,SummitWorks,Beginner,America/Toronto,Facilitator,P019-01
-FES014,2027-05-12,12:45,13:45,The Future of Event Venues,Presentation,Sustainability & Innovation,The Forum,"Evaluate flexible spaces, power capacity, accessibility and connectivity in
+    <!-- Application Script -->
+    <script>
+        // Published Google Sheet CSV Endpoint
+        const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTtjLh57HeoSLFIhbDv-Y5E_30BRt-bTy9-I2CHlU3N02JBslrlTM20Aa30opsLzwrKDzeTq_z5zgr_/pub?output=csv';
+
+        let sessionsMap = {}; // Key: Session ID -> Session Object
+        let activeView = 'list';
+        let selectedDay = 'all';
+        let bookmarkedSessionIds = new Set();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadBookmarks();
+            loadData();
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal();
+            });
+        });
+
+        function loadBookmarks() {
+            try {
+                const stored = localStorage.getItem('fes2027_my_agenda');
+                if (stored) {
+                    bookmarkedSessionIds = new Set(JSON.parse(stored));
+                }
+            } catch (e) {
+                console.error("LocalStorage access error:", e);
+            }
+            updateAgendaBadge();
+        }
+
+        function saveBookmarks() {
+            try {
+                localStorage.setItem('fes2027_my_agenda', JSON.stringify(Array.from(bookmarkedSessionIds)));
+            } catch (e) {
+                console.error("LocalStorage save error:", e);
+            }
+            updateAgendaBadge();
+            checkConflicts();
+            if (activeView === 'agenda') renderAgendaView();
+            renderCurrentView();
+        }
+
+        function toggleBookmark(sessionId, event) {
+            if (event) event.stopPropagation();
+            if (bookmarkedSessionIds.has(sessionId)) {
+                bookmarkedSessionIds.delete(sessionId);
+            } else {
+                bookmarkedSessionIds.add(sessionId);
+            }
+            saveBookmarks();
+        }
+
+        function updateAgendaBadge() {
+            const badge = document.getElementById('agenda-badge');
+            if (badge) badge.textContent = bookmarkedSessionIds.size;
+        }
+
+        // Live Data Fetch directly from Google Sheets
+        async function loadData() {
+            showStatus('loading');
+            try {
+                const response = await fetch(GOOGLE_SHEET_CSV_URL);
+                if (!response.ok) throw new Error("HTTP " + response.status + ": Unable to access Google Sheet");
+                const csvText = await response.text();
+                
+                const rows = parseCSV(csvText);
+                processDataRows(rows);
+                populateFilterDropdowns();
+                showStatus('content');
+                renderCurrentView();
+                checkConflicts();
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                showStatus('error', "Could not load data directly from Google Sheets. " + err.message);
+            }
+        }
+
+        function parseCSV(text) {
+            const lines = [];
+            let row = [];
+            let entry = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < text.length; i++) {
+                const c = text[i];
+                const next = text[i+1];
+
+                if (inQuotes) {
+                    if (c === '"' && next === '"') {
+                        entry += '"';
+                        i++;
+                    } else if (c === '"') {
+                        inQuotes = false;
+                    } else {
+                        entry += c;
+                    }
+                } else {
+                    if (c === '"') {
+                        inQuotes = true;
+                    } else if (c === ',') {
+                        row.push(entry.trim());
+                        entry = '';
+                    } else if (c === '\r') {
+                        // ignore CR
+                    } else if (c === '\n') {
+                        row.push(entry.trim());
+                        if (row.length > 1 || row[0] !== '') lines.push(row);
+                        row = [];
+                        entry = '';
+                    } else {
+                        entry += c;
+                    }
+                }
+            }
+            if (entry || row.length > 0) {
+                row.push(entry.trim());
+                if (row.length > 1 || row[0] !== '') lines.push(row);
+            }
+
+            if (lines.length === 0) return [];
+
+            const headers = lines[0].map(h => h.replace(/^\uFEFF/, '').trim());
+            const dataRows = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const curRow = lines[i];
+                if (curRow.length < headers.length) continue;
+                const obj = {};
+                for (let j = 0; j < headers.length; j++) {
+                    obj[headers[j]] = curRow[j] || '';
+                }
+                dataRows.push(obj);
+            }
+
+            return dataRows;
+        }
+
+        function processDataRows(rows) {
+            sessionsMap = {};
+
+            rows.forEach(r => {
+                const sId = r['Session ID'];
+                if (!sId) return;
+
+                if (!sessionsMap[sId]) {
+                    sessionsMap[sId] = {
+                        id: sId,
+                        date: r['Date'],
+                        startTime: r['Session Start Time'],
+                        endTime: r['Session End Time'],
+                        title: r['Session Title'],
+                        type: r['Session Type'],
+                        track: r['Track'],
+                        room: r['Room'],
+                        description: r['Session Description'],
+                        timezone: r['Timezone'] || 'America/Toronto',
+                        presentations: []
+                    };
+                }
+
+                if (r['Presentation Title'] || r['Presenter Name']) {
+                    sessionsMap[sId].presentations.push({
+                        id: r['Presentation ID'],
+                        title: r['Presentation Title'],
+                        startTime: r['Presentation Start Time'],
+                        endTime: r['Presentation End Time'],
+                        speaker: r['Presenter Name'],
+                        affiliation: r['Presenter Affiliation'],
+                        level: r['Audience Level'],
+                        role: r['Presenter Role'] || 'Speaker'
+                    });
+                }
+            });
+        }
+
+        function populateFilterDropdowns() {
+            const tracks = new Set();
+            const rooms = new Set();
+            const types = new Set();
+            const levels = new Set();
+
+            Object.values(sessionsMap).forEach(s => {
+                if (s.track) tracks.add(s.track);
+                if (s.room) rooms.add(s.room);
+                if (s.type) types.add(s.type);
+                s.presentations.forEach(p => {
+                    if (p.level) levels.add(p.level);
+                });
+            });
+
+            populateSelect('filter-track', Array.from(tracks).sort());
+            populateSelect('filter-room', Array.from(rooms).sort());
+            populateSelect('filter-type', Array.from(types).sort());
+            populateSelect('filter-level', Array.from(levels).sort());
+        }
+
+        function populateSelect(elemId, items) {
+            const select = document.getElementById(elemId);
+            const currentVal = select.value;
+            select.innerHTML = select.children[0].outerHTML;
+            items.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item;
+                opt.textContent = item;
+                select.appendChild(opt);
+            });
+            select.value = currentVal;
+        }
+
+        function showStatus(type, msg = '') {
+            document.getElementById('status-container').classList.add('hidden');
+            document.getElementById('status-loading').classList.add('hidden');
+            document.getElementById('status-error').classList.add('hidden');
+            document.getElementById('status-empty').classList.add('hidden');
+            document.getElementById('content-container').classList.add('hidden');
+
+            if (type === 'loading') {
+                document.getElementById('status-container').classList.remove('hidden');
+                document.getElementById('status-loading').classList.remove('hidden');
+            } else if (type === 'error') {
+                document.getElementById('status-container').classList.remove('hidden');
+                document.getElementById('status-error').classList.remove('hidden');
+                document.getElementById('error-message').textContent = msg;
+            } else if (type === 'empty') {
+                document.getElementById('status-container').classList.remove('hidden');
+                document.getElementById('status-empty').classList.remove('hidden');
+            } else if (type === 'content') {
+                document.getElementById('content-container').classList.remove('hidden');
+            }
+        }
+
+        function getFilteredSessions() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            const trackVal = document.getElementById('filter-track').value;
+            const roomVal = document.getElementById('filter-room').value;
+            const typeVal = document.getElementById('filter-type').value;
+            const levelVal = document.getElementById('filter-level').value;
+
+            document.getElementById('clear-search-btn').classList.toggle('hidden', query === '');
+
+            return Object.values(sessionsMap).filter(s => {
+                if (selectedDay !== 'all' && s.date !== selectedDay) return false;
+                if (trackVal && s.track !== trackVal) return false;
+                if (roomVal && s.room !== roomVal) return false;
+                if (typeVal && s.type !== typeVal) return false;
+
+                if (levelVal) {
+                    const hasLevel = s.presentations.some(p => p.level === levelVal);
+                    if (!hasLevel) return false;
+                }
+
+                if (query) {
+                    const titleMatch = s.title.toLowerCase().includes(query);
+                    const descMatch = s.description.toLowerCase().includes(query);
+                    const trackMatch = s.track.toLowerCase().includes(query);
+                    const roomMatch = s.room.toLowerCase().includes(query);
+
+                    const presMatch = s.presentations.some(p =>
+                        (p.title && p.title.toLowerCase().includes(query)) ||
+                        (p.speaker && p.speaker.toLowerCase().includes(query)) ||
+                        (p.affiliation && p.affiliation.toLowerCase().includes(query)) ||
+                        (p.role && p.role.toLowerCase().includes(query))
+                    );
+
+                    if (!titleMatch && !descMatch && !trackMatch && !roomMatch && !presMatch) return false;
+                }
+
+                return true;
+            });
+        }
+
+        function onFilterChange() {
+            renderCurrentView();
+        }
+
+        function setDayFilter(day) {
+            selectedDay = day;
+            ['all', '2027-05-12', '2027-05-13', '2027-05-14'].forEach(d => {
+                const btn = document.getElementById('day-filter-' + d);
+                if (btn) {
+                    if (d === day) {
+                        btn.className = 'px-3 py-1.5 text-xs font-semibold rounded-md bg-indigo-600 text-white transition';
+                    } else {
+                        btn.className = 'px-3 py-1.5 text-xs font-semibold rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+                    }
+                }
+            });
+            renderCurrentView();
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            onFilterChange();
+        }
+
+        function resetAllFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('filter-track').value = '';
+            document.getElementById('filter-room').value = '';
+            document.getElementById('filter-type').value = '';
+            document.getElementById('filter-level').value = '';
+            selectedDay = 'all';
+            setDayFilter('all');
+            onFilterChange();
+        }
+
+        function switchView(view) {
+            activeView = view;
+            ['list', 'grid', 'agenda'].forEach(v => {
+                const btn = document.getElementById(`view-${v}-btn`);
+                const container = document.getElementById(`${v}-view`);
+                if (v === view) {
+                    btn.className = "pb-3 tab-active transition flex items-center gap-2";
+                    container.classList.remove('hidden');
+                } else {
+                    btn.className = "pb-3 text-slate-500 hover:text-slate-800 transition flex items-center gap-2";
+                    container.classList.add('hidden');
+                }
+            });
+            renderCurrentView();
+        }
+
+        function renderCurrentView() {
+            const sessions = getFilteredSessions();
+            if (sessions.length === 0 && activeView !== 'agenda') {
+                showStatus('empty');
+                return;
+            } else {
+                showStatus('content');
+            }
+
+            if (activeView === 'list') {
+                renderListView(sessions);
+            } else if (activeView === 'grid') {
+                renderGridView(sessions);
+            } else if (activeView === 'agenda') {
+                renderAgendaView();
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function formatDateLabel(dateStr) {
+            if (dateStr === '2027-05-12') return 'Wednesday, May 12, 2027';
+            if (dateStr === '2027-05-13') return 'Thursday, May 13, 2027';
+            if (dateStr === '2027-05-14') return 'Friday, May 14, 2027';
+            return dateStr;
+        }
+
+        function renderListView(sessions) {
+            const container = document.getElementById('list-view');
+            container.innerHTML = '';
+
+            const grouped = {};
+            sessions.forEach(s => {
+                if (!grouped[s.date]) grouped[s.date] = [];
+                grouped[s.date].push(s);
+            });
+
+            const dates = Object.keys(grouped).sort();
+
+            dates.forEach(date => {
+                const daySessions = grouped[date].sort((a,b) => a.startTime.localeCompare(b.startTime));
+
+                const daySection = document.createElement('div');
+                daySection.className = 'space-y-4';
+
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'sticky top-0 bg-slate-50/95 backdrop-blur-md py-3 px-2 border-b border-slate-200 z-10 flex items-center gap-3';
+                dayHeader.innerHTML = `<h2 class="text-lg font-bold text-slate-900">${formatDateLabel(date)}</h2><span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700">${daySessions.length} sessions</span>`;
+                daySection.appendChild(dayHeader);
+
+                const cardsGrid = document.createElement('div');
+                cardsGrid.className = 'grid grid-cols-1 gap-4';
+
+                daySessions.forEach(s => {
+                    cardsGrid.appendChild(createSessionCard(s));
+                });
+
+                daySection.appendChild(cardsGrid);
+                container.appendChild(daySection);
+            });
+        }
+
+        function createSessionCard(s) {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between group';
+            card.onclick = () => openModal(s.id);
+
+            const isBookmarked = bookmarkedSessionIds.has(s.id);
+
+            card.innerHTML = `
+                <div>
+                    <div class="flex items-start justify-between gap-4 mb-2">
+                        <div class="flex flex-wrap items-center gap-2 text-xs">
+                            <span class="font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-md border border-indigo-100">
+                                <i class="fa-regular fa-clock mr-1"></i>${escapeHtml(s.startTime)} - ${escapeHtml(s.endTime)}
+                            </span>
+                            <span class="font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-md">
+                                <i class="fa-solid fa-door-open mr-1 text-slate-400"></i>${escapeHtml(s.room)}
+                            </span>
+                            <span class="font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-md">
+                                <i class="fa-solid fa-tag mr-1 text-slate-400"></i>${escapeHtml(s.track)}
+                            </span>
+                            <span class="font-medium text-slate-500 bg-slate-50 px-2 py-0.5 rounded text-[11px] border border-slate-200">
+                                ${escapeHtml(s.type)}
+                            </span>
+                        </div>
+                        <button onclick="toggleBookmark('${s.id}', event)" class="text-lg text-slate-300 hover:text-amber-500 transition p-1" title="Bookmark to My Agenda">
+                            <i class="${isBookmarked ? 'fa-solid fa-star text-amber-500' : 'fa-regular fa-star'}"></i>
+                        </button>
+                    </div>
+
+                    <h3 class="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition mb-2">${escapeHtml(s.title)}</h3>
+                    <p class="text-xs text-slate-600 line-clamp-2 mb-4">${escapeHtml(s.description)}</p>
+                </div>
+
+                ${s.presentations.length > 0 ? `
+                    <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2">
+                        <div class="flex items-center gap-2 overflow-hidden">
+                            <i class="fa-solid fa-users text-indigo-500"></i>
+                            <span class="truncate font-medium text-slate-700">
+                                ${s.presentations.map(p => escapeHtml(p.speaker)).filter(Boolean).join(', ')}
+                            </span>
+                        </div>
+                        <span class="text-indigo-600 font-semibold group-hover:translate-x-1 transition text-[11px]">View Details &rarr;</span>
+                    </div>
+                ` : ''}
+            `;
+            return card;
+        }
+
+        function renderGridView(sessions) {
+            const container = document.getElementById('grid-view');
+            container.innerHTML = '';
+
+            const activeDate = selectedDay === 'all' ? '2027-05-12' : selectedDay;
+            const daySessions = Object.values(sessionsMap).filter(s => s.date === activeDate);
+
+            const rooms = Array.from(new Set(daySessions.map(s => s.room))).sort();
+            const timeSlots = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30'];
+
+            let html = `
+                <div class="mb-4 flex justify-between items-center">
+                    <h2 class="text-base font-bold text-slate-900">Timeline Grid: ${formatDateLabel(activeDate)}</h2>
+                    <span class="text-xs text-slate-500">* Select day filters above to view other summit dates</span>
+                </div>
+                <div class="min-w-[800px] border border-slate-200 rounded-lg overflow-hidden">
+                    <div class="grid grid-cols-${rooms.length + 1} bg-slate-100 border-b border-slate-200 text-xs font-bold text-slate-700 text-center py-2.5">
+                        <div class="border-r border-slate-200">Time</div>
+                        ${rooms.map(r => `<div>${escapeHtml(r)}</div>`).join('')}
+                    </div>
+                    <div class="divide-y divide-slate-200 bg-white text-xs">
+            `;
+
+            timeSlots.forEach(time => {
+                html += `<div class="grid grid-cols-${rooms.length + 1} min-h-[60px]">`;
+                html += `<div class="p-2 font-semibold text-slate-500 bg-slate-50 border-r border-slate-200 text-center flex items-center justify-center">${time}</div>`;
+
+                rooms.forEach(room => {
+                    const match = daySessions.find(s => s.room === room && s.startTime <= time && s.endTime > time);
+                    if (match) {
+                        const isBookmarked = bookmarkedSessionIds.has(match.id);
+                        html += `
+                            <div onclick="openModal('${match.id}')" class="p-2 border-r border-slate-200 bg-indigo-50/60 hover:bg-indigo-100/80 cursor-pointer transition flex flex-col justify-between group">
+                                <div class="font-bold text-indigo-950 truncate group-hover:text-indigo-600">${escapeHtml(match.title)}</div>
+                                <div class="text-[10px] text-slate-500 flex justify-between items-center mt-1">
+                                    <span>${escapeHtml(match.startTime)}-${escapeHtml(match.endTime)}</span>
+                                    ${isBookmarked ? '<i class="fa-solid fa-star text-amber-500"></i>' : ''}
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        html += `<div class="p-2 border-r border-slate-200 bg-white"></div>`;
+                    }
+                });
+
+                html += `</div>`;
+            });
+
+            html += `</div></div>`;
+            container.innerHTML = html;
+        }
+
+        function renderAgendaView() {
+            const container = document.getElementById('agenda-view');
+            container.innerHTML = '';
+
+            const bookmarked = Object.values(sessionsMap).filter(s => bookmarkedSessionIds.has(s.id));
+
+            if (bookmarked.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-xl border border-slate-200 p-6">
+                        <i class="fa-regular fa-star text-4xl text-amber-300 mb-3"></i>
+                        <h3 class="text-base font-bold text-slate-800">Your Personal Agenda is Empty</h3>
+                        <p class="text-xs text-slate-500 mt-1 mb-4">Click the star icon on any session card to save it here for easy reference.</p>
+                        <button onclick="switchView('list')" class="px-4 py-2 bg-indigo-600 text-white text-xs font-semibold rounded-lg hover:bg-indigo-700 transition">
+                            Browse All Sessions
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            renderListView(bookmarked);
+        }
+
+        function openModal(sessionId) {
+            const s = sessionsMap[sessionId];
+            if (!s) return;
+
+            const isBookmarked = bookmarkedSessionIds.has(s.id);
+
+            const header = document.getElementById('modal-header-content');
+            header.innerHTML = `
+                <div class="flex flex-wrap items-center gap-2 text-xs mb-2">
+                    <span class="font-bold text-indigo-700 bg-indigo-100 px-2.5 py-1 rounded-md">
+                        ${formatDateLabel(s.date)} (${s.startTime} - ${s.endTime})
+                    </span>
+                    <span class="font-medium text-slate-700 bg-slate-200 px-2.5 py-1 rounded-md">${escapeHtml(s.room)}</span>
+                    <span class="font-medium text-slate-700 bg-slate-200 px-2.5 py-1 rounded-md">${escapeHtml(s.track)}</span>
+                </div>
+                <h2 class="text-xl font-bold text-slate-900">${escapeHtml(s.title)}</h2>
+            `;
+
+            const body = document.getElementById('modal-body-content');
+            let bodyHtml = `
+                <div>
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Session Overview</h4>
+                    <p class="text-slate-700 leading-relaxed">${escapeHtml(s.description)}</p>
+                </div>
+            `;
+
+            if (s.presentations && s.presentations.length > 0) {
+                bodyHtml += `
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Presentations & Speakers (${s.presentations.length})</h4>
+                        <div class="space-y-3">
+                `;
+
+                s.presentations.forEach(p => {
+                    bodyHtml += `
+                        <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 space-y-2">
+                            <div class="flex justify-between items-start gap-2">
+                                <h5 class="font-bold text-slate-900">${escapeHtml(p.title || 'Presentation')}</h5>
+                                ${p.startTime ? `<span class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">${p.startTime} - ${p.endTime}</span>` : ''}
+                            </div>
+                            <div class="flex flex-wrap items-center gap-3 text-xs text-slate-600">
+                                ${p.speaker ? `<div><i class="fa-solid fa-user text-indigo-500 mr-1"></i><strong>${escapeHtml(p.speaker)}</strong> ${p.role ? `(${escapeHtml(p.role)})` : ''}</div>` : ''}
+                                ${p.affiliation ? `<div><i class="fa-solid fa-building text-slate-400 mr-1"></i>${escapeHtml(p.affiliation)}</div>` : ''}
+                                ${p.level ? `<div><i class="fa-solid fa-layer-group text-slate-400 mr-1"></i>Level: ${escapeHtml(p.level)}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                bodyHtml += `</div></div>`;
+            }
+
+            body.innerHTML = bodyHtml;
+
+            const bmBtn = document.getElementById('modal-bookmark-btn');
+            bmBtn.className = isBookmarked ?
+                'px-4 py-2 bg-amber-100 text-amber-800 hover:bg-amber-200 text-xs font-semibold rounded-lg transition flex items-center gap-2' :
+                'px-4 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-semibold rounded-lg transition flex items-center gap-2';
+            bmBtn.innerHTML = isBookmarked ?
+                '<i class="fa-solid fa-star text-amber-500"></i> Bookmarked in Agenda' :
+                '<i class="fa-regular fa-star"></i> Add to My Agenda';
+            bmBtn.onclick = () => {
+                toggleBookmark(s.id);
+                openModal(s.id);
+            };
+
+            const icsBtn = document.getElementById('modal-ics-btn');
+            icsBtn.onclick = () => exportSingleICS(s);
+
+            document.getElementById('session-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('session-modal').classList.add('hidden');
+        }
+
+        function checkConflicts() {
+            const warningEl = document.getElementById('overlap-warning');
+            const detailsEl = document.getElementById('overlap-details');
+            warningEl.classList.add('hidden');
+            detailsEl.innerHTML = '';
+
+            const bookmarked = Object.values(sessionsMap).filter(s => bookmarkedSessionIds.has(s.id));
+            if (bookmarked.length < 2) return;
+
+            const conflicts = [];
+
+            for (let i = 0; i < bookmarked.length; i++) {
+                for (let j = i + 1; j < bookmarked.length; j++) {
+                    const s1 = bookmarked[i];
+                    const s2 = bookmarked[j];
+
+                    if (s1.date === s2.date) {
+                        if (s1.startTime < s2.endTime && s2.startTime < s1.endTime) {
+                            conflicts.push(`"${escapeHtml(s1.title)}" (${s1.startTime}-${s1.endTime}) overlaps with "${escapeHtml(s2.title)}" (${s2.startTime}-${s2.endTime}) on ${s1.date}`);
+                        }
+                    }
+                }
+            }
+
+            if (conflicts.length > 0) {
+                detailsEl.innerHTML = conflicts.map(c => `<div><i class="fa-solid fa-angle-right mr-1"></i>${c}</div>`).join('');
+                warningEl.classList.remove('hidden');
+            }
+        }
+
+        function formatICSDate(dateStr, timeStr) {
+            const cleanDate = dateStr.replace(/-/g, '');
+            const cleanTime = timeStr.replace(/:/g, '') + '00';
+            return `${cleanDate}T${cleanTime}`;
+        }
+
+        function generateICSContent(sessionsList) {
+            let ics = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//Future of Events Summit 2027//Agenda Schedule//EN',
+                'CALSCALE:GREGORIAN',
+                'METHOD:PUBLISH',
+                'BEGIN:VTIMEZONE',
+                'TZID:America/Toronto',
+                'BEGIN:DAYLIGHT',
+                'TZOFFSETFROM:-0500',
+                'TZOFFSETTO:-0400',
+                'TZNAME:EDT',
+                'DTSTART:19700308T020000',
+                'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU',
+                'END:DAYLIGHT',
+                'BEGIN:STANDARD',
+                'TZOFFSETFROM:-0400',
+                'TZOFFSETTO:-0500',
+                'TZNAME:EST',
+                'DTSTART:19701101T020000',
+                'RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU',
+                'END:STANDARD',
+                'END:VTIMEZONE'
+            ];
+
+            const uniqueSessions = Array.from(new Set(sessionsList));
+
+            uniqueSessions.forEach(s => {
+                const dtStart = formatICSDate(s.date, s.startTime);
+                const dtEnd = formatICSDate(s.date, s.endTime);
+
+                let description = s.description || '';
+                if (s.presentations && s.presentations.length > 0) {
+                    description += '\n\nPresentations:\n';
+                    s.presentations.forEach(p => {
+                        description += `- ${p.title} (${p.speaker || 'N/A'})\n`;
+                    });
+                }
+
+                description = description.replace(/\n/g, '\n').replace(/,/g, '\,').replace(/;/g, '\;');
+                const cleanTitle = (s.title || 'Summit Session').replace(/,/g, '\,').replace(/;/g, '\;');
+                const location = `${s.room || 'Main Hall'}, Toronto, Ontario, Canada`.replace(/,/g, '\,');
+
+                ics.push('BEGIN:VEVENT');
+                ics.push(`UID:FES2027-${s.id}@futureofevents2027.com`);
+                ics.push(`DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z`);
+                ics.push(`DTSTART;TZID=America/Toronto:${dtStart}`);
+                ics.push(`DTEND;TZID=America/Toronto:${dtEnd}`);
+                ics.push(`SUMMARY:${cleanTitle}`);
+                ics.push(`LOCATION:${location}`);
+                ics.push(`DESCRIPTION:${description}`);
+                ics.push('STATUS:CONFIRMED');
+                ics.push('END:VEVENT');
+            });
+
+            ics.push('END:VCALENDAR');
+            return ics.join('\r\n');
+        }
+
+        function downloadICSFile(filename, content) {
+            const blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportSingleICS(session) {
+            const content = generateICSContent([session]);
+            downloadICSFile(`FES2027_${session.id}.ics`, content);
+        }
+
+        document.getElementById('export-agenda-btn').addEventListener('click', () => {
+            const bookmarked = Object.values(sessionsMap).filter(s => bookmarkedSessionIds.has(s.id));
+            if (bookmarked.length === 0) {
+                alert('Your agenda is currently empty. Star/bookmark sessions to export your personal schedule.');
+                return;
+            }
+            const content = generateICSContent(bookmarked);
+            downloadICSFile('Future_of_Events_Summit_2027_MyAgenda.ics', content);
+        });
+    </script>
+</body>
+</html>
